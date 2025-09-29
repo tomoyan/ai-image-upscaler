@@ -2,6 +2,7 @@ import React, { useState, useCallback } from 'react';
 import { ImageUploader } from './components/ImageUploader';
 import { ResultDisplay } from './components/ResultDisplay';
 import { ActionButton } from './components/ActionButton';
+import { ImageSlider } from './components/ImageSlider';
 import { type OriginalImage } from './types';
 import { convertFile } from './utils/fileUtils';
 import { upscaleImage } from './services/geminiService';
@@ -105,7 +106,11 @@ export default function App() {
         const ctx = canvas.getContext('2d');
         if (!ctx) return;
 
-        // Draw the image directly onto the transparent canvas to preserve transparency
+        // Fill the background with white before drawing the image
+        ctx.fillStyle = 'white';
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+        // Draw the image on top of the white background
         ctx.drawImage(image, 0, 0);
 
         // Create download link from the canvas content
@@ -143,20 +148,8 @@ export default function App() {
           {!originalImage ? (
             <ImageUploader onImageSelect={handleImageSelect} isLoading={isLoading} error={error} />
           ) : (
-            <div className="flex flex-col gap-8">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <ImagePanel title="Original Image">
-                  <img src={originalImage.dataUrl} alt="Original" className="object-contain max-w-full max-h-full" />
-                </ImagePanel>
-                <ImagePanel title="Upscaled Image">
-                  <ResultDisplay 
-                    isLoading={isLoading} 
-                    error={error} 
-                    upscaledImageUrl={upscaledImageUrl} 
-                  />
-                </ImagePanel>
-              </div>
-              <div className="bg-gray-800/50 border border-gray-700 rounded-2xl p-4 flex flex-col md:flex-row items-center justify-center gap-4">
+            <div className="flex flex-col gap-4">
+               <div className="bg-gray-800/50 border border-gray-700 rounded-2xl p-4 flex flex-col md:flex-row items-center justify-center gap-4">
                 <div className="flex items-center gap-2">
                     <span className="text-gray-400 font-medium">Factor:</span>
                     <FactorButton onClick={() => setUpscaleFactor(2)} isActive={upscaleFactor === 2}>
@@ -179,6 +172,28 @@ export default function App() {
                     </ActionButton>
                 </div>
               </div>
+
+              {upscaledImageUrl ? (
+                <div className="bg-gray-800 border border-gray-700 rounded-2xl p-4 flex flex-col items-center justify-center w-full shadow-lg">
+                  <h3 className="text-lg font-semibold text-gray-300 mb-4">Comparison Slider</h3>
+                  <div className="w-full flex items-center justify-center">
+                    <ImageSlider beforeSrc={originalImage.dataUrl} afterSrc={upscaledImageUrl} />
+                  </div>
+                </div>
+              ) : (
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <ImagePanel title="Original Image">
+                    <img src={originalImage.dataUrl} alt="Original" className="object-contain max-w-full max-h-full" />
+                  </ImagePanel>
+                  <ImagePanel title="Upscaled Image">
+                    <ResultDisplay 
+                      isLoading={isLoading} 
+                      error={error} 
+                      upscaledImageUrl={upscaledImageUrl} 
+                    />
+                  </ImagePanel>
+                </div>
+              )}
             </div>
           )}
         </main>

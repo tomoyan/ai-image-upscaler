@@ -16,7 +16,14 @@ export const upscaleImage = async (base64ImageData: string, mimeType: string, fa
             },
           },
           {
-            text: `Upscale this image by ${factor}x, enhancing details and improving clarity. It is critical to preserve the original's transparency. If the original image has a transparent background, the final upscaled image MUST also have a transparent background. Make the image sharper and more defined. Only return the upscaled image.`,
+            text: `Your task is to upscale this image by ${factor}x. The goal is to produce a professional-grade, high-quality, enhanced version. Focus on these key areas:
+1. **Detail Enhancement**: Intelligently add realistic details and textures. Enhance fine lines and intricate patterns.
+2. **Clarity and Sharpness**: Significantly increase the sharpness and definition of the image. Eliminate any blurriness.
+3. **Artifact Removal**: Remove any compression artifacts (like JPEG blocking), noise, or digital grain.
+4. **Color & Lighting**: Subtly improve color vibrancy and lighting to make the image more dynamic, while staying true to the original's mood.
+5. **Transparency Preservation**: This is critical. If the original image has a transparent background, the upscaled image MUST maintain that transparency perfectly.
+
+Do not add any new elements to the image. Only enhance what is already there. Return only the final upscaled image.`,
           },
         ],
       },
